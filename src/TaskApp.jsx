@@ -7,13 +7,25 @@ function TaskApp() {
   const addTask = () => {
     if (input.trim() === "") return;
 
-    setTasks([...tasks, input]);
+    setTasks([...tasks, { text: input, completed: false }]);
     setInput("");
   };
+
   const deleteTask = (indexToDelete) => {
-  const updatedTasks = tasks.filter((_, index) => index !== indexToDelete);
-  setTasks(updatedTasks);
-};
+    const updatedTasks = tasks.filter(
+      (_, index) => index !== indexToDelete
+    );
+    setTasks(updatedTasks);
+  };
+
+  const toggleTask = (indexToToggle) => {
+    const updatedTasks = tasks.map((task, index) =>
+      index === indexToToggle
+        ? { ...task, completed: !task.completed }
+        : task
+    );
+    setTasks(updatedTasks);
+  };
 
   return (
     <div className="task-container">
@@ -26,7 +38,6 @@ function TaskApp() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
         />
-
         <button className="add-button" onClick={addTask}>
           Add
         </button>
@@ -35,15 +46,21 @@ function TaskApp() {
       <ul className="task-list">
         {tasks.map((task, index) => (
           <li key={index} className="task-item">
-  <span className="task-text">{task}</span>
+            <span
+              className={task.completed ? "completed" : ""}
+              onClick={() => toggleTask(index)}
+              style={{ cursor: "pointer" }}
+            >
+              {task.text}
+            </span>
 
-  <button
-    className="delete-button"
-    onClick={() => deleteTask(index)}
-  >
-    ✕
-  </button>
-</li>
+            <button
+              className="delete-button"
+              onClick={() => deleteTask(index)}
+            >
+              ✕
+            </button>
+          </li>
         ))}
       </ul>
     </div>
